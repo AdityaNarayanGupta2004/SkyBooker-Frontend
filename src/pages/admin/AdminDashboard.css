@@ -1,0 +1,116 @@
+.admin-header {
+  margin-bottom: 24px;
+}
+.admin-header h1 { font-size: 28px; margin-bottom: 4px; }
+.admin-header p  { color: var(--text-light); font-size: 15px; }
+
+.stats-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 16px;
+  margin-bottom: 28px;
+}
+
+.stat-card {
+  background: white;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 24px;
+  text-align: center;
+  border-top: 4px solid var(--primary);
+}
+
+.stat-number {
+  font-size: 36px;
+  font-weight: 800;
+  color: var(--primary);
+  font-family: 'Plus Jakarta Sans', sans-serif;
+}
+
+.stat-label {
+  font-size: 13px;
+  color: var(--text-light);
+  font-weight: 600;
+  margin-top: 4px;
+}
+
+.admin-tabs {
+  display: flex;
+  gap: 4px;
+  background: white;
+  padding: 6px;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+}
+
+.iata-code {
+  background: var(--primary-light);
+  color: var(--primary);
+  padding: 3px 10px;
+  border-radius: 6px;
+  font-weight: 700;
+  font-size: 13px;
+  font-family: monospace;
+}
+
+.toggle-btn {
+  padding: 6px 14px;
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.toggle-btn.deactivate {
+  background: #fee2e2;
+  color: var(--danger);
+}
+
+.toggle-btn.activate {
+  background: #dcfce7;
+  color: var(--success);
+}
+
+.admin-form { display: flex; flex-direction: column; gap: 20px; }
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 16px;
+}
+
+.empty-state-small {
+  text-align: center;
+  padding: 40px;
+  color: var(--text-light);
+}
+
+/* Shared table style (also used in staff) */
+.staff-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.staff-table th {
+  background: var(--bg);
+  padding: 12px 16px;
+  text-align: left;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-light);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.staff-table td {
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--border);
+}
+
+.staff-table tr:last-child td { border-bottom: none; }
+.staff-table tr:hover td { background: var(--bg); }

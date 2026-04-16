@@ -1,0 +1,199 @@
+.search-summary {
+  background: white;
+  border-radius: var(--radius);
+  padding: 20px 24px;
+  box-shadow: var(--shadow);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.summary-route {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 22px;
+  font-weight: 700;
+}
+
+.summary-arrow { color: var(--primary); }
+
+.summary-info {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  font-size: 14px;
+  color: var(--text-light);
+}
+
+.results-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.results-header h2 {
+  font-size: 20px;
+}
+
+.sort-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: var(--text-light);
+}
+
+.sort-btn {
+  padding: 6px 16px;
+  border-radius: 20px;
+  border: 1.5px solid var(--border);
+  background: white;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.sort-btn.active {
+  background: var(--primary);
+  color: white;
+  border-color: var(--primary);
+}
+
+.flights-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.flight-card {
+  background: white;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 20px 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border: 1.5px solid transparent;
+  transition: border 0.2s, box-shadow 0.2s;
+  gap: 20px;
+}
+
+.flight-card:hover {
+  border-color: var(--primary-light);
+  box-shadow: var(--shadow-lg);
+}
+
+.flight-main {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+  flex: 1;
+}
+
+.flight-airline {
+  display: flex;
+  flex-direction: column;
+  min-width: 100px;
+}
+
+.airline-name {
+  font-weight: 700;
+  font-size: 16px;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+}
+
+.flight-number {
+  font-size: 13px;
+  color: var(--text-light);
+}
+
+.flight-times {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex: 1;
+}
+
+.time-block { text-align: center; }
+
+.time {
+  font-size: 22px;
+  font-weight: 700;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+}
+
+.city {
+  font-size: 13px;
+  color: var(--text-light);
+}
+
+.flight-line {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex: 1;
+  color: var(--primary);
+}
+
+.line {
+  flex: 1;
+  height: 1.5px;
+  background: var(--border);
+}
+
+.seats-low { color: var(--danger); font-size: 13px; font-weight: 600; }
+.seats-ok  { color: var(--success); font-size: 13px; font-weight: 600; }
+
+.flight-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 12px;
+  min-width: 160px;
+}
+
+.flight-price { text-align: right; }
+
+.price-label {
+  display: block;
+  font-size: 12px;
+  color: var(--text-light);
+}
+
+.price {
+  display: block;
+  font-size: 26px;
+  font-weight: 800;
+  color: var(--primary);
+  font-family: 'Plus Jakarta Sans', sans-serif;
+}
+
+.price-total {
+  display: block;
+  font-size: 13px;
+  color: var(--text-light);
+}
+
+.book-btn {
+  width: 100%;
+  padding: 12px 24px;
+}
+
+.no-flights {
+  text-align: center;
+  padding: 80px 20px;
+  background: white;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+
+.no-flights-icon { font-size: 60px; margin-bottom: 16px; }
+.no-flights h3 { font-size: 22px; margin-bottom: 8px; }
+.no-flights p { color: var(--text-light); margin-bottom: 24px; }
