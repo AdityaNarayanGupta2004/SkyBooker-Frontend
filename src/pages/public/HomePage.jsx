@@ -99,7 +99,11 @@ export default function HomePage() {
             <div
               key={i}
               className="route-card"
-              onClick={() => navigate(`/search?source=${route.from}&destination=${route.to}&date=${getNextWeekDate()}&passengers=1`)}
+              // onClick={() => navigate(`/search?source=${route.from}&destination=${route.to}&date=${getNextWeekDate()}&passengers=1`)}
+              onClick={() => {
+                            setForm({ source: route.from, destination: route.to, date: '', passengers: 1 });
+                           window.scrollTo({ top: 0, behavior: 'smooth' });
+                          }}
             >
               <div className="route-cities">
                 <span>{route.from}</span>
@@ -128,10 +132,10 @@ export default function HomePage() {
 }
 
 const popularRoutes = [
-  { from: 'Delhi', to: 'Mumbai', price: '3,499' },
-  { from: 'Mumbai', to: 'Bengaluru', price: '2,799' },
-  { from: 'Delhi', to: 'Bengaluru', price: '3,999' },
-  { from: 'Mumbai', to: 'Delhi', price: '3,299' },
+  { from: 'Delhi', to: 'Mumbai', price: '4,499' },
+  { from: 'Mumbai', to: 'Bengaluru', price: '4,799' },
+  { from: 'Delhi', to: 'Bengaluru', price: '4,999' },
+  { from: 'Mumbai', to: 'Delhi', price: '4,299' },
 ];
 
 const features = [
