@@ -2,6 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { flightApi, seatApi } from '../../api/api';
 import './StaffDashboard.css';
 
+// Today's date for min attribute on date inputs
+const todayStr = new Date().toISOString().split('T')[0];
+
 export default function StaffDashboard() {
   const [tab, setTab] = useState('flights');
   const [flights, setFlights] = useState([]);
@@ -11,7 +14,8 @@ export default function StaffDashboard() {
 
   const [flightForm, setFlightForm] = useState({
     flightNumber: '', airline: '', source: '', destination: '',
-    departureDate: '', departureTime: '', arrivalTime: '',
+    departureDate: '', departureTime: '',
+    arrivalDate: '', arrivalTime: '',
     totalSeats: '', price: ''
   });
 
@@ -21,9 +25,7 @@ export default function StaffDashboard() {
     hasExtraLegroom: false, priceMultiplier: 1.0
   });
 
-  useEffect(() => {
-    fetchFlights();
-  }, []);
+  useEffect(() => { fetchFlights(); }, []);
 
   async function fetchFlights() {
     try {
@@ -31,24 +33,47 @@ export default function StaffDashboard() {
       setFlights(res.data);
     } catch (err) {
       setError('Could not load flights');
-    } finally {
-      setLoading(false);
-    }
+    } finally { setLoading(false); }
   }
 
   async function handleAddFlight(e) {
     e.preventDefault();
     setError(''); setMessage('');
+
+    // Frontend validation — departure date past mein nahi honi chahiye
+    if (flightForm.departureDate < todayStr) {
+      setError('Departure date cannot be in the past. Please select today or a future date.');
+      return;
+    }
+
+    // Arrival date departure date se pehle nahi honi chahiye
+    const arrDate = flightForm.arrivalDate || flightForm.departureDate;
+    if (arrDate < flightForm.departureDate) {
+      setError('Arrival date cannot be before departure date.');
+      return;
+    }
+
+    // Same day: arrival time must be after departure time
+    if (arrDate === flightForm.departureDate) {
+      if (flightForm.arrivalTime && flightForm.departureTime &&
+          flightForm.arrivalTime <= flightForm.departureTime) {
+        setError('Same-day flight: arrival time must be after departure time. For overnight flights set a different arrival date.');
+        return;
+      }
+    }
+
     try {
       await flightApi.addFlight({
         ...flightForm,
+        arrivalDate: flightForm.arrivalDate || flightForm.departureDate,
         totalSeats: parseInt(flightForm.totalSeats),
         price: parseFloat(flightForm.price),
       });
-      setMessage('Flight added successfully!');
+      setMessage('Flight added successfully! Seats auto-generated.');
       setFlightForm({
         flightNumber: '', airline: '', source: '', destination: '',
-        departureDate: '', departureTime: '', arrivalTime: '',
+        departureDate: '', departureTime: '',
+        arrivalDate: '', arrivalTime: '',
         totalSeats: '', price: ''
       });
       fetchFlights();
@@ -78,6 +103,15 @@ export default function StaffDashboard() {
     }
   }
 
+  // Helper: format arrival display
+  function formatArrival(flight) {
+    const time = flight.arrivalTime || '-';
+    if (flight.arrivalDate && flight.arrivalDate !== flight.departureDate) {
+      return `${time} (${flight.arrivalDate})`;
+    }
+    return time;
+  }
+
   return (
     <div className="page-container">
       <div className="staff-header">
@@ -88,7 +122,6 @@ export default function StaffDashboard() {
       {message && <div className="alert-success" style={{ marginBottom: '16px' }}>{message}</div>}
       {error   && <div className="alert-error"   style={{ marginBottom: '16px' }}>{error}</div>}
 
-      {/* Tabs */}
       <div className="staff-tabs">
         <button className={tab === 'flights' ? 'tab active' : 'tab'} onClick={() => setTab('flights')}>
           ✈ My Flights ({flights.length})
@@ -112,13 +145,8 @@ export default function StaffDashboard() {
             <table className="staff-table">
               <thead>
                 <tr>
-                  <th>Flight No.</th>
-                  <th>Airline</th>
-                  <th>Route</th>
-                  <th>Date</th>
-                  <th>Time</th>
-                  <th>Seats</th>
-                  <th>Price</th>
+                  <th>Flight No.</th><th>Airline</th><th>Route</th>
+                  <th>Departure</th><th>Arrival</th><th>Seats</th><th>Price</th>
                 </tr>
               </thead>
               <tbody>
@@ -127,11 +155,11 @@ export default function StaffDashboard() {
                     <td><strong>{flight.flightNumber}</strong></td>
                     <td>{flight.airline}</td>
                     <td>{flight.source} → {flight.destination}</td>
-                    <td>{flight.departureDate}</td>
-                    <td>{flight.departureTime} - {flight.arrivalTime}</td>
+                    <td>{flight.departureDate}<br/><small>{flight.departureTime}</small></td>
+                    <td>{flight.arrivalDate || flight.departureDate}<br/><small>{formatArrival(flight)}</small></td>
                     <td>
                       <span className={flight.availableSeats < 10 ? 'seats-low' : 'seats-ok'}>
-                        {flight.availableSeats}/{flight.totalSeats}
+                        {flight.availableSeats}
                       </span>
                     </td>
                     <td>₹{flight.price?.toLocaleString()}</td>
@@ -151,66 +179,64 @@ export default function StaffDashboard() {
             <div className="form-grid">
               <div className="form-group">
                 <label>Flight Number</label>
-                <input type="text" placeholder="6E-101"
-                  value={flightForm.flightNumber}
-                  onChange={e => setFlightForm({ ...flightForm, flightNumber: e.target.value })}
-                  required />
+                <input type="text" placeholder="6E-101" value={flightForm.flightNumber}
+                  onChange={e => setFlightForm({ ...flightForm, flightNumber: e.target.value })} required />
               </div>
               <div className="form-group">
                 <label>Airline Name</label>
-                <input type="text" placeholder="IndiGo"
-                  value={flightForm.airline}
-                  onChange={e => setFlightForm({ ...flightForm, airline: e.target.value })}
-                  required />
+                <input type="text" placeholder="IndiGo" value={flightForm.airline}
+                  onChange={e => setFlightForm({ ...flightForm, airline: e.target.value })} required />
               </div>
               <div className="form-group">
                 <label>Source</label>
-                <input type="text" placeholder="Delhi"
-                  value={flightForm.source}
-                  onChange={e => setFlightForm({ ...flightForm, source: e.target.value })}
-                  required />
+                <input type="text" placeholder="Delhi" value={flightForm.source}
+                  onChange={e => setFlightForm({ ...flightForm, source: e.target.value })} required />
               </div>
               <div className="form-group">
                 <label>Destination</label>
-                <input type="text" placeholder="Mumbai"
-                  value={flightForm.destination}
-                  onChange={e => setFlightForm({ ...flightForm, destination: e.target.value })}
-                  required />
+                <input type="text" placeholder="Mumbai" value={flightForm.destination}
+                  onChange={e => setFlightForm({ ...flightForm, destination: e.target.value })} required />
               </div>
+
+              {/* Departure Date — min = today */}
               <div className="form-group">
                 <label>Departure Date</label>
-                <input type="date"
-                  value={flightForm.departureDate}
-                  onChange={e => setFlightForm({ ...flightForm, departureDate: e.target.value })}
-                  required />
+                <input type="date" min={todayStr} value={flightForm.departureDate}
+                  onChange={e => setFlightForm({ ...flightForm, departureDate: e.target.value })} required />
               </div>
               <div className="form-group">
                 <label>Departure Time</label>
-                <input type="time"
-                  value={flightForm.departureTime}
-                  onChange={e => setFlightForm({ ...flightForm, departureTime: e.target.value })}
-                  required />
+                <input type="time" value={flightForm.departureTime}
+                  onChange={e => setFlightForm({ ...flightForm, departureTime: e.target.value })} required />
+              </div>
+
+              {/* Arrival Date — min = departureDate */}
+              <div className="form-group">
+                <label>Arrival Date</label>
+                <input type="date"
+                  min={flightForm.departureDate || todayStr}
+                  value={flightForm.arrivalDate}
+                  onChange={e => setFlightForm({ ...flightForm, arrivalDate: e.target.value })}
+                  placeholder={flightForm.departureDate || 'Select departure date first'} />
+                <small style={{ color: '#64748b', fontSize: '12px' }}>
+                  Leave empty if same day as departure
+                </small>
               </div>
               <div className="form-group">
                 <label>Arrival Time</label>
-                <input type="time"
-                  value={flightForm.arrivalTime}
-                  onChange={e => setFlightForm({ ...flightForm, arrivalTime: e.target.value })}
-                  required />
+                <input type="time" value={flightForm.arrivalTime}
+                  onChange={e => setFlightForm({ ...flightForm, arrivalTime: e.target.value })} required />
               </div>
+
               <div className="form-group">
                 <label>Total Seats</label>
-                <input type="number" placeholder="150"
-                  value={flightForm.totalSeats}
-                  onChange={e => setFlightForm({ ...flightForm, totalSeats: e.target.value })}
-                  required />
+                <input type="number" placeholder="150" min="1" value={flightForm.totalSeats}
+                  onChange={e => setFlightForm({ ...flightForm, totalSeats: e.target.value })} required />
               </div>
               <div className="form-group">
                 <label>Price (₹)</label>
-                <input type="number" placeholder="4500"
-                  value={flightForm.price}
-                  onChange={e => setFlightForm({ ...flightForm, price: e.target.value })}
-                  required />
+                <input type="number" placeholder="4500" min="1" value={flightForm.price}
+                  onChange={e => setFlightForm({ ...flightForm, price: e.target.value })} required />
               </div>
             </div>
             <button type="submit" className="btn-primary">Add Flight</button>
@@ -226,17 +252,13 @@ export default function StaffDashboard() {
             <div className="form-grid">
               <div className="form-group">
                 <label>Flight ID</label>
-                <input type="number" placeholder="1"
-                  value={seatForm.flightId}
-                  onChange={e => setSeatForm({ ...seatForm, flightId: e.target.value })}
-                  required />
+                <input type="number" placeholder="1" value={seatForm.flightId}
+                  onChange={e => setSeatForm({ ...seatForm, flightId: e.target.value })} required />
               </div>
               <div className="form-group">
                 <label>Seat Number</label>
-                <input type="text" placeholder="12A"
-                  value={seatForm.seatNumber}
-                  onChange={e => setSeatForm({ ...seatForm, seatNumber: e.target.value })}
-                  required />
+                <input type="text" placeholder="12A" value={seatForm.seatNumber}
+                  onChange={e => setSeatForm({ ...seatForm, seatNumber: e.target.value })} required />
               </div>
               <div className="form-group">
                 <label>Class</label>
@@ -249,26 +271,20 @@ export default function StaffDashboard() {
               </div>
               <div className="form-group">
                 <label>Row</label>
-                <input type="number" placeholder="12"
-                  value={seatForm.row}
-                  onChange={e => setSeatForm({ ...seatForm, row: e.target.value })}
-                  required />
+                <input type="number" placeholder="12" value={seatForm.row}
+                  onChange={e => setSeatForm({ ...seatForm, row: e.target.value })} required />
               </div>
               <div className="form-group">
                 <label>Column</label>
-                <input type="text" placeholder="A"
-                  value={seatForm.column}
-                  onChange={e => setSeatForm({ ...seatForm, column: e.target.value })}
-                  required />
+                <input type="text" placeholder="A" value={seatForm.column}
+                  onChange={e => setSeatForm({ ...seatForm, column: e.target.value })} required />
               </div>
               <div className="form-group">
                 <label>Price Multiplier</label>
-                <input type="number" step="0.1" placeholder="1.0"
-                  value={seatForm.priceMultiplier}
+                <input type="number" step="0.1" placeholder="1.0" value={seatForm.priceMultiplier}
                   onChange={e => setSeatForm({ ...seatForm, priceMultiplier: e.target.value })} />
               </div>
             </div>
-
             <div className="checkbox-row">
               <label className="checkbox-label">
                 <input type="checkbox" checked={seatForm.isWindow}
@@ -286,7 +302,6 @@ export default function StaffDashboard() {
                 Extra Legroom
               </label>
             </div>
-
             <button type="submit" className="btn-primary">Add Seat</button>
           </form>
         </div>
