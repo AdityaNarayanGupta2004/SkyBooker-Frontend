@@ -1,4 +1,4 @@
-# SkyBooker — Frontend   (Airline Ticket Booking System)
+# SkyBooker — Frontend  (Airline Ticket Booking System)
 
 This is the React frontend for SkyBooker, a flight booking platform. It talks to a Spring Boot microservices backend through a single API Gateway at `localhost:8080`. The app handles everything from searching flights to booking confirmation, and has separate dashboards for airline staff and admins.
 
