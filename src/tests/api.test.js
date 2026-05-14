@@ -16,7 +16,7 @@ jest.mock('axios', () => ({
 const axios = require('axios');
 
 // ── API helper functions — api.js se match karta hai ─────────────────────────
-const GATEWAY_URL = 'http://localhost:8080';
+const GATEWAY_URL = 'https://api-gateway-adityanarayangupta81-dev.apps.rm1.0a51.p1.openshiftapps.com';
 
 function authHeader(token) {
   return { Authorization: `Bearer ${token}` };
@@ -36,7 +36,7 @@ describe('Auth API', () => {
     await axios.post(`${GATEWAY_URL}/auth/login`, loginData);
 
     expect(axios.post).toHaveBeenCalledWith(
-      'http://localhost:8080/auth/login',
+      'https://api-gateway-adityanarayangupta81-dev.apps.rm1.0a51.p1.openshiftapps.com/auth/login',
       loginData
     );
   });
@@ -53,7 +53,7 @@ describe('Auth API', () => {
     await axios.post(`${GATEWAY_URL}/auth/register`, registerData);
 
     expect(axios.post).toHaveBeenCalledWith(
-      'http://localhost:8080/auth/register',
+      'https://api-gateway-adityanarayangupta81-dev.apps.rm1.0a51.p1.openshiftapps.com/auth/register',
       registerData
     );
   });
@@ -64,7 +64,7 @@ describe('Auth API', () => {
     await axios.post(`${GATEWAY_URL}/auth/google`, { credential: 'google-credential' });
 
     expect(axios.post).toHaveBeenCalledWith(
-      'http://localhost:8080/auth/google',
+      'https://api-gateway-adityanarayangupta81-dev.apps.rm1.0a51.p1.openshiftapps.com/auth/google',
       { credential: 'google-credential' }
     );
   });
@@ -99,7 +99,7 @@ describe('Flight API', () => {
     });
 
     expect(axios.get).toHaveBeenCalledWith(
-      'http://localhost:8080/flights/search',
+      'https://api-gateway-adityanarayangupta81-dev.apps.rm1.0a51.p1.openshiftapps.com/flights/search',
       { params: { source: 'Delhi', destination: 'Mumbai', date: '2025-12-01' } }
     );
   });
@@ -115,7 +115,7 @@ describe('Flight API', () => {
     });
 
     expect(axios.post).toHaveBeenCalledWith(
-      'http://localhost:8080/flights',
+      'https://api-gateway-adityanarayangupta81-dev.apps.rm1.0a51.p1.openshiftapps.com/flights',
       flightData,
       { headers: { Authorization: 'Bearer test-token' } }
     );
@@ -147,7 +147,7 @@ describe('Seat API', () => {
     });
 
     expect(axios.get).toHaveBeenCalledWith(
-      'http://localhost:8080/seats/flight/5/available',
+      'https://api-gateway-adityanarayangupta81-dev.apps.rm1.0a51.p1.openshiftapps.com/seats/flight/5/available',
       expect.any(Object)
     );
   });
@@ -162,7 +162,7 @@ describe('Seat API', () => {
     );
 
     expect(axios.put).toHaveBeenCalledWith(
-      'http://localhost:8080/seats/flight/5/hold/12A',
+      'https://api-gateway-adityanarayangupta81-dev.apps.rm1.0a51.p1.openshiftapps.com/seats/flight/5/hold/12A',
       null,
       expect.any(Object)
     );
@@ -178,7 +178,7 @@ describe('Seat API', () => {
     );
 
     expect(axios.put).toHaveBeenCalledWith(
-      'http://localhost:8080/seats/flight/5/confirm/12A',
+      'https://api-gateway-adityanarayangupta81-dev.apps.rm1.0a51.p1.openshiftapps.com/seats/flight/5/confirm/12A',
       null,
       expect.any(Object)
     );
@@ -208,7 +208,7 @@ describe('Payment API', () => {
     });
 
     expect(axios.post).toHaveBeenCalledWith(
-      'http://localhost:8080/payments',
+      'https://api-gateway-adityanarayangupta81-dev.apps.rm1.0a51.p1.openshiftapps.com/payments',
       paymentData,
       expect.any(Object)
     );
@@ -224,7 +224,7 @@ describe('Payment API', () => {
     );
 
     expect(axios.post).toHaveBeenCalledWith(
-      'http://localhost:8080/payments/refund/10',
+      'https://api-gateway-adityanarayangupta81-dev.apps.rm1.0a51.p1.openshiftapps.com/payments/refund/10',
       null,
       expect.any(Object)
     );
